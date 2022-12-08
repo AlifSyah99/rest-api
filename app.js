@@ -1,42 +1,59 @@
-let nav = document.getElementsByClassName('nav-link');
-let kategori = document.getElementById('kategori');
+function tampilData(kategori){
+  var kategori = kategori.toLowerCase();
+  $('#content').html('');
+  $.ajax({
+      url :'API/pizza.json',
+      type :'get',
+      dataType : 'json',
+      success: function (response) {
 
-for(var i=0; i<nav.length; i++){
+        $.each(response, function(i,data){
 
-  nav[i].addEventListener('click', function(){
-      for(var j=0; j<nav.length; j++){
-        nav[j].classList.remove('active');
-      }
-      this.classList.add('active');
-      kategori.innerHTML= this.innerHTML;
-      tampilData(kategori.innerHTML.toLowerCase());
-      
+          if(kategori == data.kategori){
+            
+            $('#content').append(`
+            <div class="col-md-3">
+              <div class=" card mb-3">
+              <img src="img/pizza/`+ data.gambar +`"class="card-img-top" alt="` + data.nama + `">
+              <div class="card-body d-flex flex-column justify-content-center">
+              <h5 class="card-title text-capitalize" >` + data.kategori + `</h5>
+              <h5 class="card-title">` + data.nama + `</h5>
+              <p class="card-text">` + data.deskripsi + `</p>
+              <p class="text-harga badge text-wrap bg-danger fw-semibold py-2 mt-auto" style="width: 7rem;cursor: context-menu;"> ` + `Harga : ` + data.harga + `</p>
+              </div>
+              </div>
+            </div>
+            `);
+
+          }else if( kategori == 'all'){
+
+            $('#content').append(`
+            <div class="col-md-3">
+              <div class=" card mb-3">
+              <img src="img/pizza/`+ data.gambar +`"class="card-img-top" alt="` + data.nama + `">
+              <div class="card-body d-flex flex-column justify-content-center">
+              <h5 class="card-title text-capitalize" >` + data.kategori + `</h5>
+              <h5 class="card-title">` + data.nama + `</h5>
+              <p class="card-text">` + data.deskripsi + `</p>
+              <p class="text-harga badge text-wrap bg-danger fw-semibold py-2 mt-auto" style="width: 7rem;cursor: context-menu;"> ` + `Harga : ` + data.harga + `</p>
+              </div>
+              </div>
+            </div>
+            `);
+
+          } 
+      });
+    }
   });
 }
 
-function tampilData(params){
-  let xhr = new XMLHttpRequest();
-  var content = document.getElementById('content');
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-      var respon = JSON.parse(this.responseText);
-      var data = respon;
-      var isi = "";
-      for (var i in data) {
-        if(params == data[i]['kategori']){
-          isi += '<div class="col-md-auto card" style="width: 16rem; "><img src="img/pizza/' + data[i]["gambar"] + '"class="card-img-top" style="width:100%;" alt="' + data[i]["nama"] + '"><div class="card-body d-flex flex-column justify-content-center"><h5 class="card-title text-capitalize" >' + data[i]["kategori"] + '</h5><h5 class="card-title">' + data[i]["nama"] + '</h5><p class="card-text">' + data[i]['deskripsi'] + '</p><p class="text-harga badge text-wrap bg-danger fw-semibold py-2 mt-auto" style="width: 7rem;cursor: context-menu;"> ' + 'Harga : ' + data[i]["harga"] + '</p></div></div>';
-        }else if(params=='all'){
-          isi += '<div class="col-md-auto card" style="width: 16rem; "><img src="img/pizza/' + data[i]["gambar"] + '"class="card-img-top" style="width:100%;" alt="' + data[i]["nama"] + '"><div class="card-body d-flex flex-column justify-content-center"><h5 class="card-title text-capitalize" >' + data[i]["kategori"] + '</h5><h5 class="card-title">' + data[i]["nama"] + '</h5><p class="card-text">' + data[i]['deskripsi'] + '</p><p class="text-harga badge text-wrap bg-danger fw-semibold py-2 mt-auto" style="width: 7rem;cursor: context-menu;"> ' + 'Harga : ' + data[i]["harga"] + '</p></div></div>'; 
-        }
-      }
-      content.innerHTML = isi;
-  
-    }
-  }
-  xhr.open('GET', 'API/pizza.json', true);
-  xhr.send();
+$('.nav-link').on('click', function() {
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
 
-}
+    let kategori = $(this).html();
+    $('#kategori').html(kategori);
+    tampilData(kategori);
+});
+
 tampilData('all');
-
-
