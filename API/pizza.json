@@ -1,5 +1,5 @@
 [
-
+    
         {
             "kategori": "pizza",
             "nama": "Meat Lover",
@@ -112,4 +112,5 @@
             "harga": 5000,
             "gambar": "aqua.jfif"
         }
+        
 ]
